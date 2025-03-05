@@ -304,14 +304,13 @@ class LinkedList<T> {
   }
 
   public reverse(): LinkedListNode<T>  {
-    let prev: LinkedListNode<T> | null = null;
-    let current: LinkedListNode<T> | null = this.head;
+    let [prev, current, next]: (LinkedListNode<T> | null)[] = [null, this.head, null];
 
     while (current) {
-      const tempNext = current.next;
+      next = current.next;
       current.next = prev;
       prev = current;
-      current = tempNext;
+      current = next;
     }
 
     if (!prev) {
