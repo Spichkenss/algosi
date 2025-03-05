@@ -3,6 +3,18 @@ class LinkedListNode<T> {
     public value: T,
     public next: LinkedListNode<T> | null = null
   ) {}
+
+  public toArray(cb?: (item: LinkedListNode<T>) => T): T[] {
+    const result: T[] = [];
+    let current: LinkedListNode<T> | null = this;
+
+    while (current) {
+      result.push(cb ? cb(current) : current.value);
+      current = current.next;
+    }
+
+    return result;
+  }
 }
 
 class LinkedList<T> {
@@ -106,8 +118,7 @@ class LinkedList<T> {
     }
 
     // Создаем новый узел и вставляем его после текущего
-    const newNode = new LinkedListNode(value, current!.next);
-    current!.next = newNode;
+    current!.next = new LinkedListNode(value, current!.next);
 
     // Увеличиваем длину списка
     this.length++;
@@ -291,6 +302,24 @@ class LinkedList<T> {
 
     return resultList;
   }
+
+  public reverse(): LinkedListNode<T>  {
+    let prev: LinkedListNode<T> | null = null;
+    let current: LinkedListNode<T> | null = this.head;
+
+    while (current) {
+      const tempNext = current.next;
+      current.next = prev;
+      prev = current;
+      current = tempNext;
+    }
+
+    if (!prev) {
+      throw new Error("Reverse error!")
+    }
+
+    return prev;
+  }
 }
 
 type User = {
@@ -304,14 +333,19 @@ listOfUsersA
   .append({ id: 1, name: "Alexandr B." })
   .append({ id: 3, name: "Alexey Y." })
   .append({ id: 5, name: "Alexey R." })
+  .print(user => user.name)
 
-const listOfUsersB = new LinkedList<User>();
+const namesOfReversedListOfUsersA = listOfUsersA.reverse().toArray();
 
-listOfUsersB
-  .append({ id: 2, name: "Oleg J." })
-  .append({ id: 4, name: "Vladimir K." })
-  .append({ id: 6, name: "Timofey U." })
+console.log(namesOfReversedListOfUsersA);
 
-listOfUsersA
-  .merge(listOfUsersB, (a, b) => a.id.toString().localeCompare(b.id.toString()))
-  .print((user) => user.name);
+// const listOfUsersB = new LinkedList<User>();
+//
+// listOfUsersB
+//   .append({ id: 2, name: "Oleg J." })
+//   .append({ id: 4, name: "Vladimir K." })
+//   .append({ id: 6, name: "Timofey U." })
+//
+// listOfUsersA
+//   .merge(listOfUsersB, (a, b) => a.id.toString().localeCompare(b.id.toString()))
+//   .print((user) => user.name);
